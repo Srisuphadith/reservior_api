@@ -1,0 +1,65 @@
+        const dd = document.createElement("div")
+        const myInput = document.getElementById("input_field")
+        // myInput.addEventListener('input', (event) => {
+        //     dd.innerHTML = ""
+        //     const thres = parseFloat(event.target.value)
+        //     call_api(thres)
+
+        // })
+        async function call_api(th) {
+            dd.innerHTML = ""
+            
+            const thw = parseFloat(myInput.value)
+            const res = await fetch("https://app.rid.go.th/reservoir/api/reservoir/public")
+            try {
+                if (res.status == 200 && res.ok) {
+                    const data = await res.json()
+                    const sub = data.data
+                    
+                    
+                    for (let key in sub) {
+                        const re = sub[key]
+                        //console.log(re.region)
+                        const c = document.createElement("h1")
+                        dd.appendChild(c)
+                        c.innerText = re.region
+                        const x = document.createElement("ul")
+                        dd.appendChild(x)
+
+                        for (let k in re) {
+                            const rf = re[k]
+                            //console.log(rf)
+
+                            for (let i in rf) {
+                                //console.log(rf[i])
+                                if (rf[i].name ) {
+                                    const y = document.createElement("li");
+                                    const l = document.createElement("a");
+                                    l.href = "https://www.google.com/maps/search/?api=1&query="+ rf[i].name;
+                                    l.target = "_blank"
+                                    l.innerHTML  = "เปอร์เซ็นน้ำตอนนี้ = " + rf[i].percent_storage + "% &nbsp&nbsp&nbsp|&nbsp&nbsp" + rf[i].name;
+                                    l.style.fontSize = "20px";
+                                    l.style.textDecoration = "none"
+                                    console.log(th)
+                                    console.log(thw)
+                                    if (await rf[i].percent_storage > (th ?? thw)) {
+                                        l.style.color = "red"
+                                    } else {
+                                        l.style.color = "black"
+                                    }
+                                    await y.appendChild(l)
+                                    await x.appendChild(y)
+                                }
+                            }
+                            
+                        }
+
+                    }
+                    document.body.appendChild(dd)
+
+                    //console.log(sub)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
